@@ -11,7 +11,7 @@ public class SparkContextProvider {
 
    private SparkContextProvider() {
        this.sparkConf = new SparkConf().setAppName("JavaSparkPi");
-       this.sparkConf.setJars(new String[]{"/tmp/src/target/SparkPiBoot-0.0.1-SNAPSHOT.jar.original"});
+       this.sparkConf.setJars(new String[]{"/opt/app-root/src/SparkPiBoot-0.0.1-SNAPSHOT.jar.original"});
        this.sparkContext = new JavaSparkContext(sparkConf);
    }
 

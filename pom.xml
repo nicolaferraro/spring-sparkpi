@@ -49,7 +49,7 @@
           <groupId>org.apache.spark</groupId>
           <artifactId>spark-core_2.10</artifactId>
           <version>2.1.0</version>
-          <type>jar</type>
+          <scope>provided</scope>
         </dependency>
 	</dependencies>
 
@@ -59,6 +59,72 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>fabric8-maven-plugin</artifactId>
+				<version>3.3.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>resource</goal>
+							<goal>build</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+
+					<resources>
+						<env>
+							<APPLICATION_NAME>spring-sparkpi</APPLICATION_NAME>
+							<APP_FILE>${project.artifactId}-${project.version}.jar</APP_FILE>
+							<OSHINKO_DEL_CLUSTER>true</OSHINKO_DEL_CLUSTER>
+						</env>
+					</resources>
+
+					<!-- Needed when not using an explicit image -->
+					<!--<generator>-->
+						<!--<config>-->
+							<!--<spring-boot>-->
+								<!--&lt;!&ndash;<mainClass>io.radanalytics.SparkPiBootApplication</mainClass>&ndash;&gt;-->
+								<!--&lt;!&ndash; The radanalytics java-spark image &ndash;&gt;-->
+								<!--<from>radanalyticsio/radanalytics-java-spark</from>-->
+							<!--</spring-boot>-->
+						<!--</config>-->
+					<!--</generator>-->
+
+					<!-- Not needed if not using the .original jar -->
+					<images>
+						<image>
+							<name>io.radanalytics/spring-sparkpi</name>
+							<alias>spring-sparkpi</alias>
+							<build>
+								<from>radanalyticsio/radanalytics-java-spark</from>
+								<assembly>
+									<targetDir>/target</targetDir>
+									<inline>
+										<fileSets>
+											<fileSet>
+												<directory>target</directory>
+												<includes>
+													<include>*.jar</include>
+													<include>*.original</include>
+												</includes>
+												<outputDirectory>.</outputDirectory>
+											</fileSet>
+										</fileSets>
+									</inline>
+								</assembly>
+								<ports>
+									<port>8080</port>
+								</ports>
+							</build>
+						</image>
+					</images>
+
+				</configuration>
+			</plugin>
+
 		</plugins>
 	</build>
 
